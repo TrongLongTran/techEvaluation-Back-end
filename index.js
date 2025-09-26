@@ -2,18 +2,21 @@ const express = require("express")
 const app = express();
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
+const candiDateInfo = require("./routes/getAllCandidatesInfo")
+const cors = require("cors")
 
 dotenv.config();
 
-mongoose.connect(process.env.MONGODB_KEY)
+const client = mongoose.connect(process.env.MONGODB_KEY)
 .then(()=>{console.log("Connected to mongodb")})
 .catch((err)=>{console.log("Error, nuh uh, problem is: "), err})
 
-app.use(express.json())
+app.use(cors())
 
-app.get("/api", (req, res)=>{
-    res.json({fruits: ["new", "app"]})
-})
+
+app.use(express.json())
+// /getCandidates/allCandiIdeality
+app.use("/getCandidates", candiDateInfo);
 
 app.listen(8000, ()=>{
     console.log("Server start at http://localhost:8000")
