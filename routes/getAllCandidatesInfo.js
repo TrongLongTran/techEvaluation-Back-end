@@ -25,9 +25,11 @@ router.get("/isealDTB", async (req, res)=>{
             'Collections': 1,
             'Committee report': 1
         })
+        .skip(amountData)
+        .limit(limit)
         if(getData.length==0)
             return res.status(400).json({error: "Something is wrong, found nothing"})
-        res.json(getData.slice(amountData, amountData+limit))
+        res.json(getData)
     }catch(err){
         res.status(500).json({error: "cant connect to server"})
     }
@@ -54,9 +56,11 @@ router.get("/historiesVotes", async (req, res)=>{
             'Collections': 1,
             'Committee report': 1
         })
+        .skip(amountData)
+        .limit(limit)
         if(getData.length==0)
             return res.status(400).json({error: "Something is wrong, found nothing"})
-        res.json(getData.slice(amountData, amountData+limit))
+        res.json(getData)
     }catch(err){
         res.status(500).json({error: "cant connect to server"})
     }
@@ -70,6 +74,7 @@ router.get("/allTimeLine", async (req, res)=>{
             'id': 1,
             'Vote date': 1
         })
+        .limit(10)
         if(getNewStuffs.length==0)
             return res.status(500).json({error: "No dates found"})
         res.json(getNewStuffs)

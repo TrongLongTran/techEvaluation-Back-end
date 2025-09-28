@@ -10,7 +10,7 @@ const ideal = new mongoose.Schema({
     "Note": {type: String, required: true},
     "Vote summary": {type: String, required: true},
     "Vote date": {type: String, required: true},
-    "Vote": {type: String, required: true},
+    "Vote": {type: Object, required: true},
     "Collections": {type: String, required: true},
     "Committee report": {type: String, required: false},
 })
