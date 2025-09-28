@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
 const candiDateInfo = require("./routes/getAllCandidatesInfo")
+const finalInfor = require("./routes/getTotalsFinals")
 const cors = require("cors")
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(cors())
 app.use(express.json())
 // /getCandidates/allCandiIdeality
 app.use("/getCandidates", candiDateInfo);
+app.use("/getTotalRes", finalInfor)
 
 app.listen(8000, ()=>{
     console.log("Server start at http://localhost:8000")

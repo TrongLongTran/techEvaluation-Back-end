@@ -12,7 +12,7 @@ const ideal = new mongoose.Schema({
     "Vote date": {type: String, required: true},
     "Vote": {type: String, required: true},
     "Collections": {type: String, required: true},
-    "Committee report": {type: String, required: true},
+    "Committee report": {type: String, required: false},
 })
 
 const CanIdeal = mongoose.model('canIdeal', ideal, 'allCandidates');

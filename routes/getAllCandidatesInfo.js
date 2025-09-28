@@ -1,9 +1,9 @@
 const express = require("express")
 const router = express.Router();
 const CanIdeal = require("../schema/candiIdeal")
-const Candidates = require("../schema/candidatesInfo")
+// const Candidates = require("../schema/candidatesInfo")
+const {verifyUsernameAndPass, checkYear, verifyFields} = require("../middleware/checkPost");
 
-//tmr: just change database, so implement later
 router.get("/isealDTB", async (req, res)=>{
     try{
         const page = parseInt(req.query.page) || 1;
@@ -27,19 +27,6 @@ router.get("/isealDTB", async (req, res)=>{
         })
         if(getData.length==0)
             return res.status(400).json({error: "Something is wrong, found nothing"})
-        res.json(getData.slice(amountData, amountData+limit))
-    }catch(err){
-        res.status(500).json({error: "cant connect to server"})
-    }
-})
-
-router.get("/allCandiIdeality", async (req, res)=>{
-    try{
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const amountData = (page-1)*limit;
-
-        const getData = await Candidates.find().select('metadata.title metadata.vote_date metadata.agenda metadata.resolution metadata.vote_summary')
         res.json(getData.slice(amountData, amountData+limit))
     }catch(err){
         res.status(500).json({error: "cant connect to server"})
@@ -79,7 +66,7 @@ router.get("/allTimeLine", async (req, res)=>{
     try{
         // const getNewStuffs = await Candidates.find().select('metadata.vote_date')
         const getNewStuffs = await CanIdeal.find().select({
-            '_id': 0,
+            '_id': 1,
             'id': 1,
             'Vote date': 1
         })
@@ -87,25 +74,39 @@ router.get("/allTimeLine", async (req, res)=>{
             return res.status(500).json({error: "No dates found"})
         res.json(getNewStuffs)
     }catch(err){
-        res.status(500).json({error: "cant connect to server"}),
-        console.log(err)
+        res.status(500).json({error: "cant connect to server"})
     }
 })
 
-// router.get("/historiesVotes", async (req, res)=>{
-//     try{
-//         const newDates = req.query.dates;
-//         const page = parseInt(req.query.page) || 1;
-//         const limit = parseInt(req.query.limit) || 10;
-//         const amountData = (page-1)*limit;
-
-//         const getNewStuffs = await Candidates.find({"metadata.vote_date": `${newDates}`}).select('metadata.title metadata.vote_date metadata.agenda metadata.resolution metadata.vote_summary')
-//         if(getNewStuffs.length==0)
-//             res.json({error: "No dates found"})
-//         res.json(getNewStuffs.slice(amountData, amountData+limit))
-//     }catch(err){
-//         res.status(500).json({error: "cant connect to server"})
-//     }
-// })
+router.post("/resultCountry", checkYear, verifyFields, verifyUsernameAndPass, async (req, res)=>{
+    try{
+        const fromUser = req.body;
+        const getData = await CanIdeal.find({
+            $or: fromUser.map(u=>({"Title": u.Title, "id": u.id}))
+        }).select('Title id')
+        .catch(err=>{return res.status(500).json({error: err})})
+        console.log(getData)
+        
+        if(getData.length!=0){
+            for(i = 0; i<fromUser.length; i++){
+                let currentSet = fromUser[i]
+                getData.map(value=>{
+                    if((value['Title'] == currentSet["Title"]) && (value['id'] == currentSet["id"])){
+                        return res.status(400).json({error: `Problem at value ${i}, duplicate data`})
+                        
+                    }
+                })
+            }
+        }
+        //add new stuffs in dtb
+        const sendAdd = await CanIdeal.insertMany(fromUser)
+        if(sendAdd.length==0){
+            return res.status(400).json({error: "something's missing, please fill everything"})
+        }
+        res.status(200).json({success: "added to database"})
+    }catch(err){
+        res.status(500).json({error: "something is wrong"})
+    }
+})
 
 module.exports = router
