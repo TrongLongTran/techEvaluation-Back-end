@@ -18,7 +18,7 @@ function verifyFields(req, res, next){
     try{
         const fetchIn = req.body;
         fetchIn.map(dataIn=>{
-            if(dataIn["id"]=="" || dataIn["Title"]=="" || dataIn["Agenda"]=="" || dataIn["Resolution"]=="" || dataIn["Meeting Record"]=="" || dataIn["Draft resolution"]=="" || dataIn["Note"]=="" || dataIn["Vote summary"]=="" || dataIn["Vote date"]=="" || dataIn["Vote"]=="" || dataIn["Collections"]==""){
+            if(dataIn["id"]=="" || dataIn["Title"]=="" || dataIn["Agenda"]=="" || dataIn["Resolution"]=="" || dataIn["Meeting Record"]=="" || dataIn["Draft resolution"]=="" || dataIn["Note"]=="" || dataIn["Vote summary"]=="" || dataIn["Vote date"]=="" || dataIn["Collections"]==""){
                 return res.status(400).json({error: "Please fill everything"})
             }
         }
