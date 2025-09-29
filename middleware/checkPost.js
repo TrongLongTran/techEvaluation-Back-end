@@ -2,8 +2,8 @@ function verifyUsernameAndPass(req, res, next){
     try{
         const fetchIn = req.body;
         fetchIn.map(dataIn=>{
-            if(+dataIn["id"]>2000000 || +dataIn["id"] < 0){
-                return res.status(400).json({error: "resolution id is not suppose to be higher than 2000000"})
+            if(+dataIn["id"]>10000000 || +dataIn["id"] < 0){
+                return res.status(400).json({error: "resolution id is not suppose to be higher than 20000000"})
                 
             }
         }
@@ -17,7 +17,7 @@ function verifyUsernameAndPass(req, res, next){
 function verifyFields(req, res, next){
     try{
         const fetchIn = req.body;
-        fetchIn.map(dataIn=>{
+        fetchIn.forEach(dataIn=>{
             if(dataIn["id"]=="" || dataIn["Title"]=="" || dataIn["Agenda"]=="" || dataIn["Resolution"]=="" || dataIn["Meeting Record"]=="" || dataIn["Draft resolution"]=="" || dataIn["Note"]=="" || dataIn["Vote summary"]=="" || dataIn["Vote date"]=="" || dataIn["Collections"]==""){
                 return res.status(400).json({error: "Please fill everything"})
             }
@@ -42,7 +42,13 @@ function checkYear(req, res, next){
                 if(ref[1].length != 2 || ref[2].length != 2)
                     return res.status(400).json({error: "Please enter vote date in this format yyyy-mm-dd"})
             }
-            next()
+
+            if(parseInt(ref[0])>2025 || parseInt(ref[0])<2001)
+                return res.status(400).json({error: "year should be > 2001 and < 2025"})
+            if(parseInt(ref[1])<0 || parseInt(ref[1])>12)
+                return res.status(400).json({error: "month should be 1 to 12"})
+            if(parseInt(ref[2])<0 || parseInt(ref[2])>30)
+                return res.status(400).json({error: "day should be 1 to 30"})
         }
         )
         next()

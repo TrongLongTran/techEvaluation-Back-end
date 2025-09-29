@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router();
 const CanIdeal = require("../schema/candiIdeal")
 // const Candidates = require("../schema/candidatesInfo")
+const Sumarizing = require("../schema/summary")
 const {verifyUsernameAndPass, checkYear, verifyFields} = require("../middleware/checkPost");
 
 router.get("/isealDTB", async (req, res)=>{
@@ -60,7 +61,12 @@ router.get("/historiesVotes", async (req, res)=>{
         .limit(limit)
         if(getData.length==0)
             return res.status(400).json({error: "Something is wrong, found nothing"})
-        res.json(getData)
+        let finInf = [];
+        getData.map(sort=>{
+            finInf.push({"_id": sort["_id"], "Title": sort["Title"], "Vote date": sort["Vote date"], "Agenda": sort["Agenda"], "Resolution": sort["Resolution"], "Vote summary": sort["Vote summary"]})
+        })
+        res.json(finInf)
+        // res.json(getData)
     }catch(err){
         res.status(500).json({error: "cant connect to server"})
     }
@@ -87,14 +93,14 @@ router.post("/resultCountry", checkYear, verifyFields, verifyUsernameAndPass, as
     try{
         const fromUser = req.body;
         const getData = await CanIdeal.find({
-            $or: fromUser.map(u=>({"Title": u.Title, "id": u.id}))
+            $or: fromUser.map(u=>({"Title": u["Title"], "id": u["id"]}))
         }).select('Title id')
         .catch(err=>{return res.status(500).json({error: err})})
-        console.log(getData)
         
         if(getData.length!=0){
             for(i = 0; i<fromUser.length; i++){
                 let currentSet = fromUser[i]
+                console.log(currentSet)
                 getData.map(value=>{
                     if((value['Title'] == currentSet["Title"]) && (value['id'] == currentSet["id"])){
                         return res.status(400).json({error: `Problem at value ${i}, duplicate data`})
@@ -103,9 +109,12 @@ router.post("/resultCountry", checkYear, verifyFields, verifyUsernameAndPass, as
                 })
             }
         }
-        //add new stuffs in dtb
-        const sendAdd = await CanIdeal.insertMany(fromUser)
-        if(sendAdd.length==0){
+
+        //add new stuffs in dtb 
+        //REMEMBER: SWITCH BACK BEFORE FOKIN SUBMIT
+        // const sendAdd = await CanIdeal.insertMany(fromUser)
+        const sendAdd = await Sumarizing.insertMany(fromUser)
+        if(!sendAdd || sendAdd.length === 0){
             return res.status(400).json({error: "something's missing, please fill everything"})
         }
         res.status(200).json({success: "added to database"})
