@@ -10,7 +10,7 @@ function verifyUsernameAndPass(req, res, next){
         )
         next()
     }catch (err){
-        res.status(500).json({error: "N/A"})
+        res.status(500).json({error: "something is wrong, cannot connect"})
     }
 }
 
@@ -25,7 +25,7 @@ function verifyFields(req, res, next){
         )
         next()
     }catch (err){
-        res.status(500).json({error: "N/A"})
+        res.status(500).json({error: "something is wrong, cannot connect"})
     }
 }
 
@@ -47,7 +47,7 @@ function checkYear(req, res, next){
         )
         next()
     }catch (err){
-        res.status(500).json({error: "N/A"})
+        res.status(500).json({error: "something is wrong, cannot connect"})
     }
 }
 
