@@ -12,17 +12,20 @@ router.get("/testOne", async (req, res)=>{
         //get all yes, no and abstain for the graph
         let newRes = {"vote_distribution": {"Yes": 0, "No": 0, "Abstain": 0, "Non-Voting": 0}, "unique_countries": 0, "date_range": {"earliest": "", "latest": ""}}
         function getDataSet(){
+            //it return a string, and the last 4 characters (after trim) is the highest amount of countries
             newRes["unique_countries"] = getData[0]["Vote summary"].trim().slice(getData[0]["Vote summary"].length-4)
+            
+            //to get yes, no, abtain and not attend datas (all of them)
             for(i=0; i<getData.length; i++){
+                //split each into list
                 let analyze = getData[i]["Vote summary"].split(" | ")
                 for(k=0; k<analyze.length-1; k++){
                     let currentData = analyze[k].split(" ")
-                    // console.log(+currentData[currentData.length-1])
                     let amountNew = +currentData[currentData.length-1]
-                    // console.log(amountNew)
                     if(isNaN(amountNew)){
                         continue;
                     }
+                    //the string format is as followed: Yes: ..., No: ..., Abstain: ..., No Vote: ...
                     switch(k){
                         case 0:
                             newRes["vote_distribution"]["Yes"] += amountNew
@@ -39,6 +42,7 @@ router.get("/testOne", async (req, res)=>{
                     }
                 }
             }
+            //the database, is sorted, take the first and last
             newRes["date_range"]["latest"] = getData[0]["Vote date"]
             newRes["date_range"]["earliest"] = getData[getData.length-1]["Vote date"]
         }
