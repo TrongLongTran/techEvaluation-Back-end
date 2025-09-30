@@ -40,7 +40,7 @@ This backend powers the Voting Dashboard application. It provides RESTful API en
   -> Post the voting candidates and results to the database
   - # Request body
    `{
-     "id": "RES-2025-001",\n
+     "id": "RES-2025-001",
      "Title": "Sustainable Energy Development",
      "Agenda": "Climate Change and Renewable Energy",
      "Resolution": "Resolution adopted on sustainable energy",
