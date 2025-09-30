@@ -32,7 +32,7 @@ This backend powers the Voting Dashboard application. It provides RESTful API en
   -> Get first all the time line of votings
 - ```POST /getCandidates/resultCountry```
   -> Post the voting candidates and results to the database
-  - # Request body
+  - Request body
    `{
      "id": "RES-2025-001",
      "Title": "Sustainable Energy Development",
@@ -46,9 +46,9 @@ This backend powers the Voting Dashboard application. It provides RESTful API en
      "Collections": "General Assembly Resolutions",
      "Committee report": "Committee on Climate Action Report 2025"
   }`
-  - # Response (success)
+  - Response (success)
     `{success: "added to database"}`
-  - # Validation/Errors
+  - Validation/Errors
     - `400`: Duplicate data, missing fields, not correct year format, exceed ID given number limit
     - `500`: backend error
 
