@@ -38,11 +38,31 @@ This backend powers the Voting Dashboard application. It provides RESTful API en
   -> Get first all the time line of votings
 - ```POST /getCandidates/resultCountry```
   -> Post the voting candidates and results to the database
+  - # Request body
+   `{
+     "id": "RES-2025-001",
+     "Title": "Sustainable Energy Development",
+     "Agenda": "Climate Change and Renewable Energy",
+     "Resolution": "Resolution adopted on sustainable energy",
+     "Meeting Record": "Meeting-45",
+     "Draft resolution": "Draft-2025-001",
+     "Note": "Presented by the Environment Committee",
+     "Vote summary": "Adopted with majority",
+     "Vote date": "2025-09-30",
+     "Collections": "General Assembly Resolutions",
+     "Committee report": "Committee on Climate Action Report 2025"
+  }`
+  - # Response (success)
+    `{success: "added to database"}`
+  - # Validation/Errors
+    - `400`: Duplicate data, missing fields, not correct year format, exceed ID given number limit
+    - `500`: backend error
 
 ## Gather information
 - ```GET /getCandidates/testOne```
   -> Get all Yes, No, Abstain and no votes from the database with latest, earliest year and number of countries for analyzing purpose
 
-
-
-   
+## Middleware functionalities
+- `verifyUsernameAndPass` -> check if id is more than 0 and less then 20 million or not
+- `verifyFields` -> check if all fields are filled
+- `checkYear` -> check post request's year if it is in the right format or not
